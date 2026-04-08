@@ -6,7 +6,7 @@ import com.symplifica.backend.service.EmailService;
 import com.symplifica.backend.service.LlmService;
 import com.symplifica.backend.service.RssService;
 import org.jobrunr.jobs.annotations.Job;
-import org.jobrunr.spring.annotations.Recurring;
+import org.jobrunr.jobs.annotations.Recurring;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
