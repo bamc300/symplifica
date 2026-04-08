@@ -41,6 +41,8 @@ mvn test
 ## Dashboard y Monitorización
 * **JobRunr Dashboard:** Visible en `http://localhost:8000/` tras arrancar la aplicación.
 * **Mails enviados:** Pueden visualizarse abriendo MailHog en `http://localhost:8025/`.
-* **Endpoints:** Existen llamadas REST accesibles usando Authentication Basic (`admin:admin123`):
-  * `GET http://localhost:8080/api/users`
-  * `GET http://localhost:8080/api/logs`
+* **Endpoints & Swagger:** Existen llamadas REST accesibles. Para visualizar la documentación Swagger entra a:
+  * `http://localhost:8080/swagger-ui.html`
+  * Los endpoints principales (ej. usuarios y logs) están bajo Authentication Basic (`admin:admin123`):
+    * `GET http://localhost:8080/api/users`
+    * `GET http://localhost:8080/api/logs`
