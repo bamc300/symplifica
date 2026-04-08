@@ -13,12 +13,35 @@ spring:
       ddl-auto: validate
     show-sql: true
     properties:
-      hibernate:
-        format_sql: true
+      "[hibernate.format_sql]": true
 
   flyway:
     enabled: true
     baseline-on-migrate: true
+
+  mail:
+    host: localhost
+    port: 1025
+    username: ""
+    password: ""
+    properties:
+      mail.smtp.auth: false
+      mail.smtp.starttls.enable: false
+
+langchain4j:
+  ollama:
+    chat-model:
+      base-url: http://localhost:11434
+      model-name: llama3
+      temperature: 0.7
+
+org:
+  jobrunr:
+    background-job-server:
+      enabled: true
+    dashboard:
+      enabled: true
+      port: 8000
 
 server:
   port: 8080
