@@ -9,6 +9,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
+import com.symplifica.backend.service.impl.RssServiceImpl;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -24,7 +26,7 @@ public class RssServiceTest {
 
     @BeforeEach
     void setUp() {
-        rssService = new RssService(restTemplate);
+        rssService = new RssServiceImpl(restTemplate);
     }
 
     @Test
