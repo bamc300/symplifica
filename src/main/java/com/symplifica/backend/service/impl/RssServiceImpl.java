@@ -14,6 +14,9 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.symplifica.backend.utils.Constants;
+import com.symplifica.backend.utils.Messages;
+
 @Service
 public class RssServiceImpl implements RssService {
 
@@ -36,16 +39,16 @@ public class RssServiceImpl implements RssService {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(new InputSource(new StringReader(xmlContent)));
 
-            NodeList itemNodes = doc.getElementsByTagName("item");
+            NodeList itemNodes = doc.getElementsByTagName(Constants.TAG_ITEM);
             for (int i = 0; i < itemNodes.getLength(); i++) {
                 Element itemElement = (Element) itemNodes.item(i);
-                NodeList titleNodes = itemElement.getElementsByTagName("title");
+                NodeList titleNodes = itemElement.getElementsByTagName(Constants.TAG_TITLE);
                 if (titleNodes.getLength() > 0) {
                     titles.add(titleNodes.item(0).getTextContent().trim());
                 }
             }
         } catch (Exception e) {
-            System.err.println("Error fecthing RSS: " + e.getMessage());
+            System.err.println(Messages.MSG_RSS_FETCH_ERROR + e.getMessage());
         }
         return titles;
     }

@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.symplifica.backend.utils.Constants;
+import com.symplifica.backend.utils.Messages;
+
 @Component
 public class NewsJob {
 
@@ -19,9 +22,6 @@ public class NewsJob {
     private final LlmService llmService;
     private final EmailService emailService;
     private final NewsLogRepository newsLogRepository;
-
-    private static final String RSS_URL = "http://portafolio.co/rss/tendencias/entretenimiento.xml";
-    private static final String NOTIFY_EMAIL = "admin@symplifica.test";
 
     public NewsJob(RssService rssService, LlmService llmService, EmailService emailService, NewsLogRepository newsLogRepository) {
         this.rssService = rssService;
@@ -34,15 +34,15 @@ public class NewsJob {
     @Job(name = "Daily News Summary Workflow")
     public void executeNewsWorkflow() {
         NewsLog logEntry = new NewsLog();
-        System.out.println("Comenzando el job de noticias RSS...");
+        System.out.println(Messages.MSG_JOB_STARTING);
         
         try {
             // 1. Consume RSS
-            List<String> titles = rssService.fetchLatestNewsTitles(RSS_URL);
+            List<String> titles = rssService.fetchLatestNewsTitles(Constants.RSS_ENTERTAINMENT_URL);
             
             if (titles.isEmpty()) {
-                logEntry.setStatus("SKIPPED");
-                logEntry.setSummary("No se encontraron noticias en el RSS.");
+                logEntry.setStatus(Constants.STATUS_SKIPPED);
+                logEntry.setSummary(Messages.MSG_JOB_SKIPPED_NO_NEWS);
                 newsLogRepository.save(logEntry);
                 return;
             }
@@ -51,16 +51,16 @@ public class NewsJob {
             String summary = llmService.summarizeNews(titles);
 
             // 3. Enviar Email
-            emailService.sendNewsSummaryEmail(NOTIFY_EMAIL, summary);
+            emailService.sendNewsSummaryEmail(Constants.DEFAULT_ADMIN_EMAIL, summary);
 
             // 4. Guardar Log Exitoso
-            logEntry.setStatus("SUCCESS");
-            logEntry.setSummary("Se procesaron " + titles.size() + " noticias. Resumen generado y enviado correctamente.");
+            logEntry.setStatus(Constants.STATUS_SUCCESS);
+            logEntry.setSummary(Messages.MSG_JOB_SUCCESS(titles.size()));
             
         } catch (Exception e) {
-            logEntry.setStatus("FAILED");
+            logEntry.setStatus(Constants.STATUS_FAILED);
             logEntry.setErrorMessage(e.getMessage());
-            System.err.println("Error en el NewsJob: " + e.getMessage());
+            System.err.println(Messages.MSG_JOB_ERROR + e.getMessage());
             throw e; // Lanza el error para que JobRunr o Spring lo maneje/vuelva a intentar
         } finally {
             logEntry.setExecutionTime(LocalDateTime.now());

@@ -11,6 +11,9 @@ import org.springframework.util.StreamUtils;
 
 import java.nio.charset.StandardCharsets;
 
+import com.symplifica.backend.utils.Constants;
+import com.symplifica.backend.utils.Messages;
+
 @Service
 public class EmailServiceImpl implements EmailService {
 
@@ -29,22 +32,22 @@ public class EmailServiceImpl implements EmailService {
             String htmlContent;
             if (htmlTemplate.exists()) {
                 htmlContent = StreamUtils.copyToString(htmlTemplate.getInputStream(), StandardCharsets.UTF_8);
-                htmlContent = htmlContent.replace("{{SUMMARY_CONTENT}}", summaryContent.replace("\n", "<br/>"));
+                htmlContent = htmlContent.replace(Constants.KEY_SUMMARY_CONTENT, summaryContent.replace("\n", "<br/>"));
             } else {
-                htmlContent = "<html><body><h1>Resumen de Noticias</h1><p>" + summaryContent.replace("\n", "<br/>") + "</p></body></html>";
+                htmlContent = Messages.MSG_EMAIL_FALLBACK_HTML(summaryContent.replace("\n", "<br/>"));
             }
 
             MimeMessage message = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             
-            helper.setFrom("newsletter@symplifica.com.co");
+            helper.setFrom(Constants.SENDER_EMAIL);
             helper.setTo(toEmail);
-            helper.setSubject("Tu Resumen de Noticias Principal - Symplifica");
+            helper.setSubject(Messages.MSG_EMAIL_SUBJECT);
             helper.setText(htmlContent, true);
 
             emailSender.send(message);
         } catch (Exception e) {
-            System.err.println("Error enviando email: " + e.getMessage());
+            System.err.println(Messages.MSG_EMAIL_SEND_ERROR + e.getMessage());
         }
     }
 }
